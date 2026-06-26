@@ -1,10 +1,27 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from routes.auth import router as auth_router
 from websocket import manager
 
 app = FastAPI()
 
+# ----------------------------
+# CORS Configuration
+# ----------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ----------------------------
 # Authentication Routes
+# ----------------------------
 app.include_router(
     auth_router,
     prefix="/auth",
@@ -27,13 +44,9 @@ async def websocket_endpoint(
 ):
 
     # Connect user
-    await manager.connect(
-        room,
-        username,
-        websocket
-    )
+    await manager.connect(room, username, websocket)
 
-    # Send current online users in this room
+    # Send previous messages + user status
     await manager.send_user_status(room)
 
     # Notify room
