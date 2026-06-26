@@ -1,6 +1,14 @@
 import { useState } from "react";
 
-function MessageInput({sendMessage}){
+function MessageInput({
+
+    sendMessage,
+
+    receiver,
+
+    clearReceiver
+
+}){
 
     const [message,setMessage]=useState("");
 
@@ -16,33 +24,71 @@ function MessageInput({sendMessage}){
 
     return(
 
-        <div className="input-area">
+        <div>
 
-            <input
+            {
 
-                placeholder="Type your message..."
+                receiver &&
 
-                value={message}
+                <div
+                    style={{
+                        padding:"10px",
+                        background:"#dbeafe"
+                    }}
+                >
 
-                onChange={(e)=>setMessage(e.target.value)}
+                    Private Message to:
 
-                onKeyDown={(e)=>{
+                    <b>
 
-                    if(e.key==="Enter"){
+                        {receiver}
 
-                        send();
+                    </b>
 
-                    }
+                    <button
+                        onClick={clearReceiver}
+                        style={{
+                            marginLeft:"15px"
+                        }}
+                    >
 
-                }}
+                        Cancel
 
-            />
+                    </button>
 
-            <button onClick={send}>
+                </div>
 
-                Send
+            }
 
-            </button>
+            <div className="input-area">
+
+                <input
+
+                    value={message}
+
+                    placeholder="Type message..."
+
+                    onChange={(e)=>setMessage(e.target.value)}
+
+                    onKeyDown={(e)=>{
+
+                        if(e.key==="Enter"){
+
+                            send();
+
+                        }
+
+                    }}
+
+                />
+
+                <button onClick={send}>
+
+                    Send
+
+                </button>
+
+            </div>
 
         </div>
 

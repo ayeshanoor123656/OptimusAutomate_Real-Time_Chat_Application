@@ -86,35 +86,55 @@ body{
 }
 .message{
 
-    max-width:60%;
+    max-width:65%;
 
-    padding:12px;
+    padding:14px;
 
     margin:10px;
 
-    border-radius:15px;
+    border-radius:18px;
 
     word-wrap:break-word;
+
+    font-size:16px;
+
+    box-shadow:0 2px 5px rgba(0,0,0,.15);
 
 }
 
 .my-message{
 
+    margin-left:auto;
+
     background:#2563eb;
 
     color:white;
 
-    margin-left:auto;
+    border-bottom-right-radius:5px;
 
 }
 
 .other-message{
 
-    background:#e5e7eb;
+    margin-right:auto;
+
+    background:#f3f4f6;
 
     color:black;
 
-    margin-right:auto;
+    border-bottom-left-radius:5px;
+
+}
+
+.server-message{
+
+    text-align:center;
+
+    margin:15px;
+
+    color:#6b7280;
+
+    font-style:italic;
 
 }
 .input-area{

@@ -136,8 +136,10 @@ class ConnectionManager:
 
             try:
 
+                current_time = datetime.now().strftime("%H:%M")
+
                 await ws.send_text(
-                    f"{sender}: {message}"
+                    f"[{current_time}] {sender}: {message}"
                 )
 
             except Exception:
@@ -155,7 +157,10 @@ class ConnectionManager:
                 del self.connected_users[username]
 
     async def private_message(self, sender, receiver, message):
-
+            
+        print("Sender:", sender)
+        print("Receiver:", receiver)
+        print("Connected Users:", list(self.connected_users.keys()))
         if receiver not in self.connected_users:
 
             return False
@@ -184,10 +189,10 @@ class ConnectionManager:
 
             receiver_ws = self.connected_users[receiver]
 
+            current_time = datetime.now().strftime("%H:%M")
+
             await receiver_ws.send_text(
-
-                f"[PRIVATE] {sender}: {message}"
-
+                f"[{current_time}] [PRIVATE] {sender}: {message}"
             )
 
         except Exception:
@@ -199,9 +204,7 @@ class ConnectionManager:
             sender_ws = self.connected_users[sender]
 
             await sender_ws.send_text(
-
-                f"[PRIVATE to {receiver}] {message}"
-
+                f"[{current_time}] [PRIVATE to {receiver}] {message}"
             )
 
         except Exception:

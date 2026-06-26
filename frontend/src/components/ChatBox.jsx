@@ -20,23 +20,45 @@ function ChatBox({ messages, username }) {
 
                 messages.map((message, index) => {
 
-                   const mine = message.startsWith(username + ":");
+                    const serverMessage = message.includes("Server:");
 
-                   const serverMessage = message.startsWith("Server:");
+                    const mine =
+                        message.includes(`] ${username}:`) ||
+                        message.startsWith(username + ":");
+
+                    if (serverMessage) {
+
+                        return (
+
+                            <div
+                                key={index}
+                                className="server-message"
+                            >
+
+                                {message.replace("Server:", "")}
+
+                            </div>
+
+                        );
+
+                    }
 
                     return (
 
                         <div
+
                             key={index}
+
                             className={
-                                serverMessage
-                                    ? "server-message"
-                                    : mine
+                                mine
                                     ? "message my-message"
                                     : "message other-message"
                             }
+
                         >
+
                             {message}
+
                         </div>
 
                     );

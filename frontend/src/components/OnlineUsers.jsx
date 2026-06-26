@@ -1,4 +1,4 @@
-function OnlineUsers({ users }) {
+function OnlineUsers({ users, setReceiver }) {
 
     return (
 
@@ -12,28 +12,27 @@ function OnlineUsers({ users }) {
 
                     const online = user.includes("🟢");
 
+                    const username = user.split(":")[0].trim();
+
                     return (
 
                         <div
+
                             key={index}
+
                             className="user"
+
+                            onClick={() => {
+
+                                console.log("Selected:", username);
+
+                                setReceiver(username);
+
+                            }}
+
                         >
 
-                            <span>
-
-                                {online ? "🟢" : "🔴"}
-
-                            </span>
-
-                            {" "}
-
-                            {
-
-                                user
-                                    .replace("🟢", "")
-                                    .replace("🔴", "")
-
-                            }
+                            {online ? "🟢" : "🔴"} {username}
 
                         </div>
 
