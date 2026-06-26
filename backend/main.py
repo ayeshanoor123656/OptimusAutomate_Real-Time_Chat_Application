@@ -111,15 +111,21 @@ async def websocket_endpoint(
 
     except WebSocketDisconnect:
 
-        # Disconnect user
         await manager.disconnect(
             room,
             username
         )
 
-        # Notify remaining users
-        await manager.broadcast(
-            room,
-            "Server",
-            f"{username} left {room}"
-        )
+        try:
+
+            await manager.send_user_status(room)
+
+            await manager.broadcast(
+                room,
+                "Server",
+                f"{username} left {room}"
+            )
+
+        except Exception:
+
+            pass

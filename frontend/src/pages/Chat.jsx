@@ -113,7 +113,13 @@ function Chat(){
 
                 </div>
 
-                <ChatBox messages={messages}/>
+                <ChatBox
+
+                    messages={messages}
+
+                    username={username}
+
+                />
 
                 <MessageInput sendMessage={sendMessage}/>
 

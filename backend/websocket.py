@@ -6,12 +6,13 @@ from datetime import datetime
 class ConnectionManager:
 
     def __init__(self):
+
         self.rooms = {}
 
         # username -> websocket
         self.connected_users = {}
 
-        # username -> Online/Offline
+        # username -> status
         self.user_status = {}
 
     async def connect(self, room, username, websocket):
@@ -27,53 +28,77 @@ class ConnectionManager:
 
         self.user_status[username] = "🟢 Online"
 
-        # -------------------------------
-        # Send previous room messages
-        # -------------------------------
+        # -----------------------------
+        # Send Previous Chat History
+        # -----------------------------
+
         messages = list(
+
             db.messages.find(
+
                 {
                     "room": room,
                     "type": "room"
                 }
+
             ).sort("timestamp", -1).limit(20)
+
         )
 
         messages.reverse()
 
         if len(messages) > 0:
 
-            await websocket.send_text("")
-            await websocket.send_text("===================================")
-            await websocket.send_text("      PREVIOUS CHAT HISTORY")
-            await websocket.send_text("===================================")
-
-            for msg in messages:
-
-                time = msg["timestamp"].strftime("%H:%M")
+            try:
 
                 await websocket.send_text(
-                    f"[{time}] {msg['sender']}: {msg['message']}"
+                    "=========== Previous Chat History ==========="
                 )
 
-            await websocket.send_text("===================================")
-            await websocket.send_text("")
+                for msg in messages:
+
+                    try:
+
+                        time = ""
+
+                        if "timestamp" in msg:
+
+                            time = msg["timestamp"].strftime("%H:%M")
+
+                        await websocket.send_text(
+                            f"[{time}] {msg['sender']}: {msg['message']}"
+                        )
+
+                    except Exception:
+
+                        await websocket.send_text(
+                            f"{msg['sender']}: {msg['message']}"
+                        )
+
+                await websocket.send_text(
+                    "============================================="
+                )
+
+            except Exception:
+
+                pass
 
     async def disconnect(self, room, username):
 
         self.user_status[username] = "🔴 Offline"
 
-        await self.send_user_status(room)
-
         if room in self.rooms:
 
             if username in self.rooms[room]:
+
                 del self.rooms[room][username]
 
             if len(self.rooms[room]) == 0:
+
                 del self.rooms[room]
 
         if username in self.connected_users:
+
             del self.connected_users[username]
 
     async def broadcast(self, room, sender, message):
@@ -81,55 +106,109 @@ class ConnectionManager:
         if room not in self.rooms:
             return
 
-        # Don't save server messages
+        # Save room messages
+
         if sender != "Server":
 
-            db.messages.insert_one({
+            db.messages.insert_one(
 
-                "sender": sender,
-                "receiver": None,
-                "room": room,
-                "message": message,
-                "type": "room",
-                "timestamp": datetime.utcnow()
+                {
 
-            })
+                    "sender": sender,
 
-        for ws in self.rooms[room].values():
-            await ws.send_text(
-                f"{sender}: {message}"
+                    "receiver": None,
+
+                    "room": room,
+
+                    "message": message,
+
+                    "type": "room",
+
+                    "timestamp": datetime.utcnow()
+
+                }
+
             )
+
+        disconnected = []
+
+        for username, ws in self.rooms[room].items():
+
+            try:
+
+                await ws.send_text(
+                    f"{sender}: {message}"
+                )
+
+            except Exception:
+
+                disconnected.append(username)
+
+        for username in disconnected:
+
+            if username in self.rooms[room]:
+
+                del self.rooms[room][username]
+
+            if username in self.connected_users:
+
+                del self.connected_users[username]
 
     async def private_message(self, sender, receiver, message):
 
         if receiver not in self.connected_users:
+
             return False
 
-        # Save in MongoDB
-        db.messages.insert_one({
+        db.messages.insert_one(
 
-            "sender": sender,
-            "receiver": receiver,
-            "room": None,
-            "message": message,
-            "type": "private",
-            "timestamp": datetime.utcnow()
+            {
 
-        })
+                "sender": sender,
 
-        receiver_ws = self.connected_users[receiver]
-        sender_ws = self.connected_users[sender]
+                "receiver": receiver,
 
-        await receiver_ws.send_text(
-            f"[PRIVATE] {sender}: {message}"
+                "room": None,
+
+                "message": message,
+
+                "type": "private",
+
+                "timestamp": datetime.utcnow()
+
+            }
+
         )
 
-        await sender_ws.send_text(
-            f"[PRIVATE to {receiver}] {message}"
-        )
+        try:
+
+            receiver_ws = self.connected_users[receiver]
+
+            await receiver_ws.send_text(
+
+                f"[PRIVATE] {sender}: {message}"
+
+            )
+
+        except Exception:
+
+            return False
+
+        try:
+
+            sender_ws = self.connected_users[sender]
+
+            await sender_ws.send_text(
+
+                f"[PRIVATE to {receiver}] {message}"
+
+            )
+
+        except Exception:
+
+            pass
 
         return True
-
     async def send_user_status(self, room):
 
         if room not in self.rooms:
@@ -137,7 +216,7 @@ class ConnectionManager:
 
         status = ""
 
-        # Users currently inside room
+        # Current users in room
         for username in self.rooms[room]:
 
             state = self.user_status.get(
@@ -147,20 +226,33 @@ class ConnectionManager:
 
             status += f"{username}: {state}\n"
 
-        # Users who recently disconnected
-        for username, state in self.user_status.items():
+        disconnected = []
 
-            if (
-                state == "🔴 Offline"
-                and username not in self.rooms[room]
-            ):
-                status += f"{username}: {state}\n"
+        # Send status safely
+        for username, ws in self.rooms[room].items():
 
-        for ws in self.rooms[room].values():
+            try:
 
-            await ws.send_text(
-                "===== USERS =====\n" + status
-            )
+                await ws.send_text(
+                    "===== USERS =====\n" + status
+                )
+
+            except Exception:
+
+                disconnected.append(username)
+
+        # Remove broken sockets
+        for username in disconnected:
+
+            if username in self.rooms[room]:
+
+                del self.rooms[room][username]
+
+            if username in self.connected_users:
+
+                del self.connected_users[username]
+
+            self.user_status[username] = "🔴 Offline"
 
 
 manager = ConnectionManager()

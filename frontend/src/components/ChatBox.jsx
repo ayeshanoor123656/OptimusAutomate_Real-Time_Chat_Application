@@ -1,4 +1,16 @@
+import { useEffect, useRef } from "react";
+
 function ChatBox({ messages, username }) {
+
+    const bottomRef = useRef(null);
+
+    useEffect(() => {
+
+        bottomRef.current?.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }, [messages]);
 
     return (
 
@@ -8,24 +20,23 @@ function ChatBox({ messages, username }) {
 
                 messages.map((message, index) => {
 
-                    const mine = message.startsWith(username + ":");
+                   const mine = message.startsWith(username + ":");
+
+                   const serverMessage = message.startsWith("Server:");
 
                     return (
 
                         <div
-
                             key={index}
-
                             className={
-                                mine
+                                serverMessage
+                                    ? "server-message"
+                                    : mine
                                     ? "message my-message"
                                     : "message other-message"
                             }
-
                         >
-
                             {message}
-
                         </div>
 
                     );
@@ -33,6 +44,8 @@ function ChatBox({ messages, username }) {
                 })
 
             }
+
+            <div ref={bottomRef}></div>
 
         </div>
 

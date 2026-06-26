@@ -1,29 +1,45 @@
-function OnlineUsers({users}){
+function OnlineUsers({ users }) {
 
-    return(
+    return (
 
         <div className="sidebar">
 
-            <h2>
-
-                Online Users
-
-            </h2>
+            <h2>Online Users</h2>
 
             {
 
-                users.map((user,index)=>(
+                users.map((user, index) => {
 
-                    <div
-                        className="user"
-                        key={index}
-                    >
+                    const online = user.includes("🟢");
 
-                        {user}
+                    return (
 
-                    </div>
+                        <div
+                            key={index}
+                            className="user"
+                        >
 
-                ))
+                            <span>
+
+                                {online ? "🟢" : "🔴"}
+
+                            </span>
+
+                            {" "}
+
+                            {
+
+                                user
+                                    .replace("🟢", "")
+                                    .replace("🔴", "")
+
+                            }
+
+                        </div>
+
+                    );
+
+                })
 
             }
 
