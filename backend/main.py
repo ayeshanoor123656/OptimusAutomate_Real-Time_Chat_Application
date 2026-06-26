@@ -2,7 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from routes.auth import router as auth_router
 from websocket import manager
-
+from routes.rooms import router as room_router
 app = FastAPI()
 
 # ----------------------------
@@ -27,7 +27,11 @@ app.include_router(
     prefix="/auth",
     tags=["Authentication"]
 )
-
+app.include_router(
+    room_router,
+    prefix="/rooms",
+    tags=["Rooms"]
+)
 
 @app.get("/")
 def home():

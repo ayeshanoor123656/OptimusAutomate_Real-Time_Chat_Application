@@ -19,7 +19,7 @@ function App() {
 
                 <Route path="/dashboard" element={<Dashboard />} />
 
-                <Route path="/chat/:room/:username" element={<Chat />} />
+                <Route path="/chat/:room" element={<Chat />} />
 
             </Routes>
 

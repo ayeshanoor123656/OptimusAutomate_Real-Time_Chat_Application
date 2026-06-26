@@ -23,6 +23,12 @@ function Login() {
                 response.data.access_token
             );
 
+            // Save email temporarily
+            localStorage.setItem(
+                "email",
+                email
+            );
+
             alert("Login Successful!");
 
             navigate("/dashboard");
