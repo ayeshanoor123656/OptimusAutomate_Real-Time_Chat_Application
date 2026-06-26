@@ -16,6 +16,15 @@ class ConnectionManager:
         self.user_status = {}
 
     async def connect(self, room, username, websocket):
+        # Remove old connection if the same user reconnects
+        if username in self.connected_users:
+
+            try:
+                await self.connected_users[username].close()
+            except:
+                pass
+
+            del self.connected_users[username]
 
         await websocket.accept()
 
@@ -85,6 +94,9 @@ class ConnectionManager:
 
     async def disconnect(self, room, username):
 
+        if username in self.connected_users:
+          del self.connected_users[username]
+
         self.user_status[username] = "🔴 Offline"
 
         if room in self.rooms:
@@ -96,10 +108,6 @@ class ConnectionManager:
             if len(self.rooms[room]) == 0:
 
                 del self.rooms[room]
-
-        if username in self.connected_users:
-
-            del self.connected_users[username]
 
     async def broadcast(self, room, sender, message):
 
@@ -222,11 +230,10 @@ class ConnectionManager:
         # Current users in room
         for username in self.rooms[room]:
 
-            state = self.user_status.get(
-                username,
-                "🔴 Offline"
-            )
-
+            if username in self.connected_users:
+                state = "🟢 Online"
+            else:
+                state = "🔴 Offline"
             status += f"{username}: {state}\n"
 
         disconnected = []

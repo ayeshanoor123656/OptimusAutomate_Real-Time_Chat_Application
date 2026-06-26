@@ -20,13 +20,27 @@ function ChatBox({ messages, username }) {
 
                 messages.map((message, index) => {
 
-                    const serverMessage = message.includes("Server:");
+                    // Previous Chat History Divider
+                    if (
+                        message.includes("Previous Chat History") ||
+                        message.includes("===========")
+                    ) {
 
-                    const mine =
-                        message.includes(`] ${username}:`) ||
-                        message.startsWith(username + ":");
+                        return (
 
-                    if (serverMessage) {
+                            <div
+                                key={index}
+                                className="history-divider"
+                            >
+                                📜 Previous Messages
+                            </div>
+
+                        );
+
+                    }
+
+                    // Server Messages
+                    if (message.includes("Server:")) {
 
                         return (
 
@@ -34,14 +48,49 @@ function ChatBox({ messages, username }) {
                                 key={index}
                                 className="server-message"
                             >
-
                                 {message.replace("Server:", "")}
-
                             </div>
 
                         );
 
                     }
+
+                    // Private message sent
+                    if (message.includes("[PRIVATE to")) {
+
+                        return (
+
+                            <div
+                                key={index}
+                                className="private-message private-sent"
+                            >
+                                🔒 {message}
+                            </div>
+
+                        );
+
+                    }
+
+                    // Private message received
+                    if (message.includes("[PRIVATE]")) {
+
+                        return (
+
+                            <div
+                                key={index}
+                                className="private-message private-received"
+                            >
+                                🔒 {message}
+                            </div>
+
+                        );
+
+                    }
+
+                    // Normal messages
+                    const mine =
+                        message.includes(`] ${username}:`) ||
+                        message.startsWith(username + ":");
 
                     return (
 
