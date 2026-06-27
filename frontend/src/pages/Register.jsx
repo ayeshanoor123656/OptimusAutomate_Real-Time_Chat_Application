@@ -12,7 +12,7 @@ function Register() {
     async function register() {
         try {
             await api.post("/auth/register", { username, email, password });
-            navigate("/");
+            navigate("/login");
         } catch {
             alert("Registration failed. Please try again.");
         }
@@ -53,7 +53,7 @@ function Register() {
 
                 <p>
                     Already have an account?
-                    <Link to="/">Sign in</Link>
+                    <Link to="/login">Sign in</Link>
                 </p>
             </div>
         </div>
