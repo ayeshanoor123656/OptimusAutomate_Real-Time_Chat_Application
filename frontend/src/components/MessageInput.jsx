@@ -1,135 +1,64 @@
 import { useState } from "react";
 import EmojiPicker from "emoji-picker-react";
+import "../styles/chat.css";
 
-function MessageInput({
-
-    sendMessage,
-
-    receiver,
-
-    clearReceiver
-
-}) {
-
+function MessageInput({ sendMessage, receiver, clearReceiver }) {
     const [message, setMessage] = useState("");
-
     const [showPicker, setShowPicker] = useState(false);
 
     function send() {
-
         if (message.trim() === "") return;
-
         sendMessage(message);
-
         setMessage("");
-
         setShowPicker(false);
-
     }
 
     function onEmojiClick(emojiData) {
-
-    setMessage(previous => previous + emojiData.emoji);
-
-    setShowPicker(false);
-
-}
+        setMessage(prev => prev + emojiData.emoji);
+        setShowPicker(false);
+    }
 
     return (
-
-        <div>
-
-            {
-
-                receiver &&
-
-                <div
-                    style={{
-                        padding: "10px",
-                        background: "#dbeafe"
-                    }}
-                >
-
-                    Private Message to:
-
-                    <b> {receiver} </b>
-
-                    <button
-                        onClick={clearReceiver}
-                        style={{ marginLeft: "15px" }}
-                    >
-
-                        Cancel
-
-                    </button>
-
+        <div className="input-wrapper">
+            {receiver && (
+                <div className="dm-indicator">
+                    <span>📨 DM to <strong>{receiver}</strong></span>
+                    <button onClick={clearReceiver}>✕ Cancel</button>
                 </div>
+            )}
 
-            }
-
-            {
-
-                showPicker &&
-
-                <div style={{ margin: "10px" }}>
-
+            {showPicker && (
+                <div className="emoji-picker-wrapper">
                     <EmojiPicker
                         onEmojiClick={onEmojiClick}
+                        theme="dark"
+                        skinTonesDisabled
+                        height={380}
+                        width={320}
                     />
-
                 </div>
+            )}
 
-            }
-
-            <div className="input-area">
-
+            <div className="message-input-area">
                 <button
-
+                    className="emoji-btn"
                     onClick={() => setShowPicker(!showPicker)}
-
-                    style={{
-                        marginRight: "10px",
-                        fontSize: "22px"
-                    }}
-
+                    title="Pick emoji"
                 >
-
                     😊
-
                 </button>
 
                 <input
-
                     value={message}
-
-                    placeholder="Type message..."
-
+                    placeholder={receiver ? `Message @${receiver}…` : "Message the room…"}
                     onChange={(e) => setMessage(e.target.value)}
-
-                    onKeyDown={(e) => {
-
-                        if (e.key === "Enter") {
-
-                            send();
-
-                        }
-
-                    }}
-
+                    onKeyDown={(e) => e.key === "Enter" && send()}
                 />
 
-                <button onClick={send}>
-
-                    Send
-
-                </button>
-
+                <button className="send-btn" onClick={send}>➤</button>
             </div>
-
         </div>
-
     );
-
 }
 
 export default MessageInput;

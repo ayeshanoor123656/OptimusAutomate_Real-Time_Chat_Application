@@ -2,85 +2,62 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../styles/login.css";
+
 function Login() {
-
     const navigate = useNavigate();
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     async function login() {
-
         try {
-
-            const response = await api.post("/auth/login", {
-                email,
-                password
-            });
-
-            localStorage.setItem(
-                "token",
-                response.data.access_token
-            );
-
-            // Save email temporarily
-            localStorage.setItem(
-                "email",
-                email
-            );
-
-            alert("Login Successful!");
-
+            const response = await api.post("/auth/login", { email, password });
+            localStorage.setItem("token", response.data.access_token);
+            localStorage.setItem("email", email);
             navigate("/dashboard");
-
         } catch (error) {
-
-            alert("Invalid Email or Password");
-
+            alert("Invalid email or password.");
         }
+    }
 
+    function handleKey(e) {
+        if (e.key === "Enter") login();
     }
 
     return (
-
         <div className="login-container">
+            <div className="auth-card">
+                <div className="brand-mark">💬</div>
+                <h1>Welcome back</h1>
 
-            <h1>Chat Application</h1>
+                <div className="field-group">
+                    <label className="field-label">Email</label>
+                    <input
+                        type="email"
+                        placeholder="you@example.com"
+                        onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={handleKey}
+                    />
+                </div>
 
-            <input
-                type="email"
-                placeholder="Email"
-                onChange={(e)=>setEmail(e.target.value)}
-            />
+                <div className="field-group">
+                    <label className="field-label">Password</label>
+                    <input
+                        type="password"
+                        placeholder="••••••••"
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={handleKey}
+                    />
+                </div>
 
-            <input
-                type="password"
-                placeholder="Password"
-                onChange={(e)=>setPassword(e.target.value)}
-            />
+                <button onClick={login}>Sign in</button>
 
-            <button onClick={login}>
-
-                Login
-
-            </button>
-
-            <p>
-
-                Don't have an account?
-
-                <Link to="/register">
-
-                    Register
-
-                </Link>
-
-            </p>
-
+                <p>
+                    Don't have an account?
+                    <Link to="/register">Create one</Link>
+                </p>
+            </div>
         </div>
-
     );
-
 }
 
 export default Login;

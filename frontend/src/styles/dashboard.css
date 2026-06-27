@@ -1,112 +1,252 @@
-body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#f4f7fb;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Dashboard ── */
+
+.dashboard {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 70% 0%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+              #0d1117;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5rem 1.5rem;
+  font-family: 'Inter', sans-serif;
 }
 
-.dashboard{
-
-    width:450px;
-
-    margin:70px auto;
-
-    background:white;
-
-    padding:35px;
-
-    border-radius:15px;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.15);
-
+/* ── Top bar ── */
+.dashboard-header {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
 }
 
-.dashboard h1{
-
-    text-align:center;
-
-    margin-bottom:30px;
-
-    color:#2563eb;
-
+.dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.dashboard input{
-
-    width:100%;
-
-    padding:12px;
-
-    margin-top:15px;
-
-    border:1px solid #ccc;
-
-    border-radius:8px;
-
-    box-sizing:border-box;
-
-    font-size:16px;
-
+.dashboard-brand .logo {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
 }
 
-.dashboard button{
-
-    width:100%;
-
-    padding:12px;
-
-    margin-top:20px;
-
-    border:none;
-
-    border-radius:8px;
-
-    background:#2563eb;
-
-    color:white;
-
-    font-size:16px;
-
-    cursor:pointer;
-
+.dashboard-brand h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e6edf3;
 }
 
-.dashboard button:hover{
-
-    background:#1d4ed8;
-
+.dashboard-header .logout {
+  background: transparent;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  padding: 0.45rem 1rem;
+  border-radius: 7px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.logout{
-
-    background:#ef4444 !important;
-
+.dashboard-header .logout:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.06);
 }
 
-.logout:hover{
-
-    background:#dc2626 !important;
-
-}
-.room{
-
-    padding:15px;
-
-    margin-top:10px;
-
-    background:#2563eb;
-
-    color:white;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
+/* ── Username input ── */
+.dashboard > input,
+.username-input {
+  width: 100%;
+  max-width: 680px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 0.8rem 1.1rem;
+  color: #e6edf3;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.room:hover{
+.dashboard > input:focus,
+.username-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
 
-    background:#1d4ed8;
+.dashboard > input::placeholder,
+.username-input::placeholder {
+  color: #484f58;
+}
 
+/* ── Section headings ── */
+.dashboard > h2,
+.section-title {
+  width: 100%;
+  max-width: 680px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #484f58;
+  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* ── Rooms list ── */
+.rooms-list {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.room {
+  width: 100%;
+  max-width: 680px;
+  background: #161b22;
+  border: 1px solid #21262d;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #c9d1d9;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.room::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, #7c3aed, #4f46e5);
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 3px 0 0 3px;
+}
+
+.room:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.06);
+  color: #e6edf3;
+  transform: translateX(2px);
+}
+
+.room:hover::before {
+  opacity: 1;
+}
+
+.room .status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.7);
+  animation: pulse-dot 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 6px rgba(34, 197, 94, 0.7); }
+  50% { box-shadow: 0 0 12px rgba(34, 197, 94, 0.9); }
+}
+
+.room .room-arrow {
+  margin-left: auto;
+  color: #484f58;
+  font-size: 0.9rem;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.room:hover .room-arrow {
+  transform: translateX(3px);
+  color: #a78bfa;
+}
+
+.no-rooms {
+  width: 100%;
+  max-width: 680px;
+  text-align: center;
+  color: #484f58;
+  font-size: 0.875rem;
+  padding: 2rem;
+  border: 1px dashed #21262d;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+/* ── Create room section ── */
+.create-room-row {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.create-room-row input {
+  flex: 1;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 9px;
+  padding: 0.75rem 1rem;
+  color: #e6edf3;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.create-room-row input::placeholder { color: #484f58; }
+
+.create-room-row input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+.create-room-row button,
+.dashboard > button:not(.logout) {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 0.75rem 1.3rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.create-room-row button:hover,
+.dashboard > button:not(.logout):hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.4);
 }

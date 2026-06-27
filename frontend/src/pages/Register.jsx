@@ -2,84 +2,62 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "../styles/login.css";
+
 function Register() {
-
     const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const [username,setUsername]=useState("");
-    const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");
-
-    async function register(){
-
-        try{
-
-            await api.post("/auth/register",{
-
-                username,
-                email,
-                password
-
-            });
-
-            alert("Registration Successful!");
-
+    async function register() {
+        try {
+            await api.post("/auth/register", { username, email, password });
             navigate("/");
-
+        } catch {
+            alert("Registration failed. Please try again.");
         }
-
-        catch{
-
-            alert("Registration Failed");
-
-        }
-
     }
 
-    return(
-
+    return (
         <div className="login-container">
+            <div className="auth-card">
+                <div className="brand-mark">✨</div>
+                <h1>Create account</h1>
 
-            <h1>Create Account</h1>
+                <div className="field-group">
+                    <label className="field-label">Username</label>
+                    <input
+                        placeholder="Pick a username"
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </div>
 
-            <input
-                placeholder="Username"
-                onChange={(e)=>setUsername(e.target.value)}
-            />
+                <div className="field-group">
+                    <label className="field-label">Email</label>
+                    <input
+                        placeholder="you@example.com"
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
 
-            <input
-                placeholder="Email"
-                onChange={(e)=>setEmail(e.target.value)}
-            />
+                <div className="field-group">
+                    <label className="field-label">Password</label>
+                    <input
+                        type="password"
+                        placeholder="••••••••"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
 
-            <input
-                type="password"
-                placeholder="Password"
-                onChange={(e)=>setPassword(e.target.value)}
-            />
+                <button onClick={register}>Create account</button>
 
-            <button onClick={register}>
-
-                Register
-
-            </button>
-
-            <p>
-
-                Already have an account?
-
-                <Link to="/">
-
-                    Login
-
-                </Link>
-
-            </p>
-
+                <p>
+                    Already have an account?
+                    <Link to="/">Sign in</Link>
+                </p>
+            </div>
         </div>
-
     );
-
 }
 
 export default Register;
